@@ -44,6 +44,7 @@ public class MeteoController {
 	@FXML
 	void doCalcolaSequenza(ActionEvent event) {
 		txtResult.setText(model.trovaSequenza(boxMese.getValue()));
+		System.out.println("Sta girando...");
 	}
 
 	@FXML

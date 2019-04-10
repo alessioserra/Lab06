@@ -72,7 +72,6 @@ public class MeteoDAO {
 
 				conn.close();
 				
-				//Calcolo media e restituisco
 				return rilevamenti;
 
 			} catch (SQLException e) {

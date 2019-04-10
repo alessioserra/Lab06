@@ -22,7 +22,7 @@ public class Model {
 	
 	//Costruttore
 	public Model() {
-		sequenza="";
+		sequenza="ciao";
 		listaCitta.add("Torino");
 		listaCitta.add("Genova");
 		listaCitta.add("Milano");
@@ -59,13 +59,17 @@ public class Model {
 		List<SimpleCity> parziale = new ArrayList<SimpleCity>();
 		
 		List<SimpleCity> valori = new ArrayList<SimpleCity>();
+		
 		for (String localita : listaCitta) {
 			
 		//Ottengo tutti i valori
-		for (Rilevamento r : dao.getAllRilevamentiLocalitaMese(mese, localita) ) {
-		    valori.add(new SimpleCity(r.getLocalita(),r.getUmidita()));
+			List<Rilevamento> lista = dao.getAllRilevamentiLocalitaMese(mese, localita).subList(0, 14);
+			
+		for (Rilevamento r : lista ) {
+		    valori.add(new SimpleCity( r.getLocalita(), r.getUmidita()) );
 		    }
 	    }
+		
 		//Avvio ricorsione
 		cercaSequenza(parziale,0,mese,valori);
 		
@@ -82,7 +86,7 @@ public class Model {
 				if (punteggioSoluzione(parziale)<best) {
 					
 					for (SimpleCity city : parziale)
-						sequenza=sequenza+city.getNome()+"-";
+						sequenza=sequenza+city.getNome()+"->";
 					    best = punteggioSoluzione(parziale);
 					return;
 				}
@@ -95,9 +99,10 @@ public class Model {
 		//RICORSIONE
 		for (int i=0;i<valori.size();i++) {
 		parziale.add(new SimpleCity(valori.get(i).getNome(),valori.get(i).getCosto()));
+				
 		cercaSequenza(parziale,livello+1,mese,valori);
 		
-		//backtracking
+		//Backtracking
 		parziale.remove(valori.get(i));	
 		}
 		
@@ -131,7 +136,7 @@ public class Model {
 		}
 		
 		//Controllo sul MIN e MAX di Rilevamenti
-		if (torino>0 && torino <7 && milano>0 && milano <7 && genova>0 && genova <7) return true;
+		if (torino>=0 && torino <7 && milano>=0 && milano <7 && genova>=0 && genova <7) return true;
 		
 		return false;
 	}
