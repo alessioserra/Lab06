@@ -10,6 +10,18 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 
 public class MeteoController {
+	
+	Model model = new Model();
+	
+	public void setModel(Model model) {
+		this.model=model;
+		this.getValoriBoxMese();
+	}
+	
+	//Setto il boxMese con tutti gli interi dei relativi mesi
+	public void getValoriBoxMese() {
+	    boxMese.getItems().addAll(1,2,3,4,5,6,7,8,9,10,11,12);
+	}
 
 	@FXML
 	private ResourceBundle resources;
@@ -18,7 +30,7 @@ public class MeteoController {
 	private URL location;
 
 	@FXML
-	private ChoiceBox<?> boxMese;
+	private ChoiceBox<Integer> boxMese;
 
 	@FXML
 	private Button btnCalcola;
@@ -36,7 +48,8 @@ public class MeteoController {
 
 	@FXML
 	void doCalcolaUmidita(ActionEvent event) {
-
+	    txtResult.clear();
+		txtResult.setText(model.getUmiditaMedia(boxMese.getValue()));
 	}
 
 	@FXML

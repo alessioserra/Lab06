@@ -41,12 +41,85 @@ public class MeteoDAO {
 
 	public List<Rilevamento> getAllRilevamentiLocalitaMese(int mese, String localita) {
 
-		return null;
-	}
+		String sql="";
+		List<Rilevamento> rilevamenti = new ArrayList<Rilevamento>(); 
+		
+		if (mese < 10) {
+			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE '2013-0?-%%' AND localita=?";
+			}
+			else {
+			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE '2013-?-%%' AND localita=?";
+			}
+			
+			try {
+				Connection conn = DBConnect.getInstance().getConnection();
+				PreparedStatement st = conn.prepareStatement(sql);
 
+				st.setInt(1, mese);
+				st.setString(2, localita);
+				
+				ResultSet rs = st.executeQuery();
+				
+				while (rs.next()) {
+
+					Rilevamento r = new Rilevamento(rs.getString("Localita"), rs.getDate("Data"), rs.getInt("Umidita"));
+					rilevamenti.add(r);
+					
+				}
+
+				conn.close();
+				
+				//Calcolo media e restituisco
+				return rilevamenti;
+
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+
+	
+	
 	public Double getAvgRilevamentiLocalitaMese(int mese, String localita) {
 
-		return 0.0;
-	}
+		double valoreUmiditaMedio=0.0;
+		
+		final String sql = "SELECT localita,SUM(umidita) AS somma,COUNT(DATA) AS giorni FROM situazione WHERE data LIKE ? AND localita=? GROUP BY localita";
+			
+			try {
+				Connection conn = DBConnect.getInstance().getConnection();
+				PreparedStatement st = conn.prepareStatement(sql);
+
+				//Assegno parametri
+				if (mese <10 ) st.setString(1, "2013-0"+mese+"%%");
+				else st.setString(1, "2013-"+mese+"%%");
+				
+				st.setString(2, localita);
+				
+				ResultSet rs = st.executeQuery();
+
+				int somma=0;
+				int giorni=0;
+				
+				while (rs.next()) {
+
+					somma = rs.getInt("somma");
+					giorni = rs.getInt("giorni");
+					
+				}
+
+				conn.close();
+				
+				//Calcolo media e restituisco
+				valoreUmiditaMedio = somma/giorni;
+				return valoreUmiditaMedio;
+
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
 
 }
