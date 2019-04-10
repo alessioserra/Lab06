@@ -43,12 +43,11 @@ public class MeteoController {
 
 	@FXML
 	void doCalcolaSequenza(ActionEvent event) {
-
+		txtResult.setText(model.trovaSequenza(boxMese.getValue()));
 	}
 
 	@FXML
 	void doCalcolaUmidita(ActionEvent event) {
-	    txtResult.clear();
 		txtResult.setText(model.getUmiditaMedia(boxMese.getValue()));
 	}
 

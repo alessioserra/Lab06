@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.tdp.meteo.bean.Rilevamento;
+import it.polito.tdp.meteo.bean.SimpleCity;
 
 public class MeteoDAO {
 
@@ -45,17 +46,20 @@ public class MeteoDAO {
 		List<Rilevamento> rilevamenti = new ArrayList<Rilevamento>(); 
 		
 		if (mese < 10) {
-			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE '2013-0?-%%' AND localita=?";
+			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE ? AND localita=? ORDER BY data ASC";
 			}
 			else {
-			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE '2013-?-%%' AND localita=?";
+			 sql = "SELECT Localita, Data, Umidita FROM situazione WHERE data LIKE ? AND localita=? ORDER BY data ASC";
 			}
 			
 			try {
 				Connection conn = DBConnect.getInstance().getConnection();
 				PreparedStatement st = conn.prepareStatement(sql);
 
-				st.setInt(1, mese);
+				//Assegno parametri
+				if (mese <10 ) st.setString(1, "2013-0"+mese+"%%");
+				else st.setString(1, "2013-"+mese+"%%");
+				
 				st.setString(2, localita);
 				
 				ResultSet rs = st.executeQuery();
@@ -64,7 +68,6 @@ public class MeteoDAO {
 
 					Rilevamento r = new Rilevamento(rs.getString("Localita"), rs.getDate("Data"), rs.getInt("Umidita"));
 					rilevamenti.add(r);
-					
 				}
 
 				conn.close();
@@ -99,8 +102,8 @@ public class MeteoDAO {
 				
 				ResultSet rs = st.executeQuery();
 
-				int somma=0;
-				int giorni=0;
+				double somma=0.0;
+				double giorni=0.0;
 				
 				while (rs.next()) {
 
@@ -108,18 +111,15 @@ public class MeteoDAO {
 					giorni = rs.getInt("giorni");
 					
 				}
-
 				conn.close();
 				
 				//Calcolo media e restituisco
-				valoreUmiditaMedio = somma/giorni;
+				valoreUmiditaMedio =somma/giorni;
 				return valoreUmiditaMedio;
 
 			} catch (SQLException e) {
-
 				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
 		}
-
 }
