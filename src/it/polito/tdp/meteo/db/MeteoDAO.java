@@ -7,10 +7,38 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.tdp.meteo.bean.Citta;
 import it.polito.tdp.meteo.bean.Rilevamento;
 import it.polito.tdp.meteo.bean.SimpleCity;
 
 public class MeteoDAO {
+	
+	public List<Citta> getCitta(){
+		final String sql = "SELECT DISTINCT Localita FROM situazione";
+
+		List<Citta> listaCitta = new ArrayList<Citta>();
+
+		try {
+			Connection conn = DBConnect.getInstance().getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+
+				Citta c = new Citta(rs.getString("Localita"));
+				listaCitta.add(c);
+			}
+
+			conn.close();
+			return listaCitta;
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<Rilevamento> getAllRilevamenti() {
 

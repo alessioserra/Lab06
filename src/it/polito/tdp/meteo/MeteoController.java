@@ -1,8 +1,10 @@
 package it.polito.tdp.meteo;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.meteo.bean.Citta;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -43,8 +45,13 @@ public class MeteoController {
 
 	@FXML
 	void doCalcolaSequenza(ActionEvent event) {
-		txtResult.setText(model.trovaSequenza(boxMese.getValue()));
-		System.out.println("Sta girando...");
+		//Ottengo risultati
+		List<Citta> sequenza = model.trovaSequenza(boxMese.getValue());
+		//Li stampo
+		for (Citta c : sequenza) {
+			txtResult.appendText(c.getNome()+"\n");
+		}
+		txtResult.appendText("COSTO TOTALE: "+model.punteggioSoluzione(model.getBest()));
 	}
 
 	@FXML
